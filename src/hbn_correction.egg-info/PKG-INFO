@@ -1,3 +1,11 @@
+Metadata-Version: 2.2
+Name: hbn-correction
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=2.2.3
+
 [![DOI](https://zenodo.org/badge/657341621.svg)](https://zenodo.org/doi/10.5281/zenodo.10383685)
 
 # HBN Correction
