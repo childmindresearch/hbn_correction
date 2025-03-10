@@ -15,7 +15,6 @@ class DataCorrection:
     ) -> pd.DataFrame:
         for n in cls.dx_ns:
             # fix certainty values for null or not given diagnoses
-
             d_col = "Diagnosis_ClinicianConsensus,DX_" + n
             for c in [
                 "Confirmed",
@@ -61,8 +60,6 @@ class DataCorrection:
     def _correct_confirmed_presum(
         cls,
         df: pd.DataFrame,
-        #   i: int,
-        #   n: str,
     ) -> pd.DataFrame:
         for n in cls.dx_ns:
             not_null = (
@@ -98,26 +95,9 @@ class DataCorrection:
             )
         return df
 
-    def _correct_time(
-        cls,
-        df: pd.DataFrame,
-        #   i: int,
-        #   n: str,
-    ) -> pd.DataFrame:
-        # if ByHx, Time should be Null
-        for n in cls.dx_ns:
-            df["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] = np.where(
-                df["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"] == 1,
-                np.nan,
-                df["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"],
-            )
-        return df
-
     def _correct_past_doc(
         cls,
         df: pd.DataFrame,
-        #   i: int,
-        #   n: str,
     ) -> int:
         for n in cls.dx_ns:
             current_diagnosis = (
@@ -191,8 +171,6 @@ class DataCorrection:
         df = cls._correct_byhx(df)
         # fill missing confirmed and presumptive data
         df = cls._correct_confirmed_presum(df)
-        # # remove incorrect time data
-        # df = cls._correct_time(df)
         # remove incorrect past doc data
         df = cls._correct_past_doc(df)
         for n in dx_ns:
