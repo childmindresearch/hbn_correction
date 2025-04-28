@@ -77,7 +77,7 @@ def long_diagnoses(data: pd.DataFrame) -> pd.DataFrame:
         .stack(0)
         .reset_index()
         .drop(columns="level_2")
-        .merge(melted_diagnoses, on=["Identifiers", "Diagnosis Number"])
+        .merge(melted, on=["Identifiers", "Diagnosis Number"])
         .rename(columns={"Doc": "Past_Doc"})
     )
 
