@@ -7,3 +7,16 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 ![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
 [![pages](https://img.shields.io/badge/api-docs-blue)](https://childmindresearch.github.io/hbn_correction)
+
+# Installation 
+Install this package via:
+```sh
+pip install git+https://github.com/childmindresearch/hbn_correction.git
+```
+
+## Quick start
+```sh
+from hbn_correction.datacorrection import DataCorrection
+corrected_data = DataCorrection().run(hbn_data_path = "./data.csv")
+```
+[Notebook Example](https://github.com/childmindresearch/hbn_correction/blob/main/examples/run_data_correction.ipynb)
