@@ -15,7 +15,7 @@ def test_input() -> None:
         DataCorrection().run("data/wrong_data.csv")
 
 
-def test_null_replacements():
+def test_correct_nulls():
     """Test that there are no certainty values for null diagnoses."""
     output = DataCorrection()._correct_nulls(data)
     for n, col in itertools.product(
@@ -53,7 +53,7 @@ def test_null_replacements():
         )
 
 
-def test_byhx_correction():
+def test_correct_byhx():
     """Test that the ByHx column is corrected."""
     output = DataCorrection()._correct_byhx(data)
     for n in [f"{n:02d}" for n in range(1, 11)]:
@@ -80,7 +80,7 @@ def test_byhx_correction():
         )
 
 
-def test_confirmedpresum_conrrection():
+def test_correct_confirmed_presum():
     """Test that confirmed and presumptive values are corrected."""
     output = DataCorrection()._correct_confirmed_presum(data)
     for n in [f"{n:02d}" for n in range(1, 11)]:
@@ -104,7 +104,7 @@ def test_confirmedpresum_conrrection():
             )
 
 
-def test_pastdoc_correction():
+def test_correct_past_doc():
     """Test that past documentation values are corrected."""
     output = DataCorrection()._correct_past_doc(data)
     for n in [f"{n:02d}" for n in range(1, 11)]:
