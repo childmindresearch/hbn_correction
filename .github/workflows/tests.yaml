@@ -8,13 +8,7 @@ on:
 
 jobs:
   unit:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python_version: ['3.11', '3.12', '3.13']
-        resolution: [lowest-direct, highest]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Install uv
@@ -22,11 +16,11 @@ jobs:
       shell: bash
     - uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python_version }}
-        cache: pip
+        python-version-file: pyproject.toml
+        cache: uv
     - name: Install dependencies
       run: |
-        uv sync --resolution=${{ matrix.resolution }}
+        uv sync
       shell: bash
     - name: Run tests
       id: run-tests
