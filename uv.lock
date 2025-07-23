@@ -184,7 +184,7 @@ wheels = [
 ]
 
 [[package]]
-name = "hbn-correction"
+name = "hbn_correction"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
@@ -197,7 +197,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "hbn-correction" },
+    { name = "hbn_correction" },
 ]
 
 [package.metadata]
@@ -210,7 +210,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "hbn-correction", virtual = "." }]
+dev = [{ name = "hbn_correction", virtual = "." }]
 
 [[package]]
 name = "iniconfig"

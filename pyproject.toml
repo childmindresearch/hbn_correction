@@ -14,8 +14,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "hbn-correction"
+  "hbn_correction"
 ]
 
 [tool.uv.sources]
-hbn-correction = {workspace = true}
+hbn_correction = {workspace = true}
