@@ -7,4 +7,3 @@ src/hbn_correction.egg-info/SOURCES.txt
 src/hbn_correction.egg-info/dependency_links.txt
 src/hbn_correction.egg-info/requires.txt
 src/hbn_correction.egg-info/top_level.txt
-tests/test_datacorrection.py

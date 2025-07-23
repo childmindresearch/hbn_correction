@@ -15,7 +15,7 @@ class DataCorrection:
     ) -> pd.DataFrame:
         for n in cls.dx_ns:
             # fix certainty values for null or not given diagnoses
-            d_col = "Diagnosis_ClinicianConsensus,DX_" + n
+            d_col = cls.col_base + n
             for c in [
                 "Confirmed",
                 "Presum",
@@ -25,7 +25,7 @@ class DataCorrection:
                 "Time",
                 "Past_Doc",
             ]:
-                cert_col = "Diagnosis_ClinicianConsensus,DX_" + n + "_" + c
+                cert_col = cls.col_base + n + "_" + c
                 null_condition = (
                     (df[d_col] == "No Diagnosis Given")
                     | (df[d_col] == "No Diagnosis Given: Incomplete Eval")
@@ -43,17 +43,16 @@ class DataCorrection:
         # if any of confirmed, presum, or RC are 1, if ByHx is NULL, ByHx should be 0
         for n in cls.dx_ns:
             any_cert = (
-                (df["Diagnosis_ClinicianConsensus,DX_" + n + "_Confirmed"] == 1)
-                | (df["Diagnosis_ClinicianConsensus,DX_" + n + "_Presum"] == 1)
-                | (df["Diagnosis_ClinicianConsensus,DX_" + n + "_RC"] == 1)
-                | (df["Diagnosis_ClinicianConsensus,DX_" + n + "_RuleOut"] == 1)
+                (df[cls.col_base + n + "_Confirmed"] == 1)
+                | (df[cls.col_base + n + "_Presum"] == 1)
+                | (df[cls.col_base + n + "_RC"] == 1)
+                | (df[cls.col_base + n + "_RuleOut"] == 1)
             )
 
-            df["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"] = np.where(
-                (any_cert)
-                & pd.isna(df["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"]),
+            df[cls.col_base + n + "_ByHx"] = np.where(
+                (any_cert) & pd.isna(df[cls.col_base + n + "_ByHx"]),
                 0,
-                df["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"],
+                df[cls.col_base + n + "_ByHx"],
             )
         return df
 
@@ -63,35 +62,32 @@ class DataCorrection:
     ) -> pd.DataFrame:
         for n in cls.dx_ns:
             not_null = (
-                (~pd.isna(df["Diagnosis_ClinicianConsensus,DX_" + n]))
-                & (df["Diagnosis_ClinicianConsensus,DX_" + n] != "No Diagnosis Given")
-                & (
-                    df["Diagnosis_ClinicianConsensus,DX_" + n]
-                    != "No Diagnosis Given: Incomplete Eval"
-                )
+                (~pd.isna(df[cls.col_base + n]))
+                & (df[cls.col_base + n] != "No Diagnosis Given")
+                & (df[cls.col_base + n] != "No Diagnosis Given: Incomplete Eval")
             )
-            missing_confirm_presum = (
-                pd.isna(df["Diagnosis_ClinicianConsensus,DX_" + n + "_Confirmed"])
-            ) & (pd.isna(df["Diagnosis_ClinicianConsensus,DX_" + n + "_Presum"]))
+            missing_confirm_presum = (pd.isna(df[cls.col_base + n + "_Confirmed"])) & (
+                pd.isna(df[cls.col_base + n + "_Presum"])
+            )
             other_cert = (
-                (df["Diagnosis_ClinicianConsensus,DX_" + n + "_RC"] == 1)
-                | (df["Diagnosis_ClinicianConsensus,DX_" + n + "_RuleOut"] == 1)
-                | (df["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"] == 1)
+                (df[cls.col_base + n + "_RC"] == 1)
+                | (df[cls.col_base + n + "_RuleOut"] == 1)
+                | (df[cls.col_base + n + "_ByHx"] == 1)
             )
 
-            df["Diagnosis_ClinicianConsensus,DX_" + n + "_Confirmed"] = np.where(
+            df[cls.col_base + n + "_Confirmed"] = np.where(
                 not_null & missing_confirm_presum,
                 np.where(
                     other_cert,
                     0,
                     1,
                 ),
-                df["Diagnosis_ClinicianConsensus,DX_" + n + "_Confirmed"],
+                df[cls.col_base + n + "_Confirmed"],
             )
-            df["Diagnosis_ClinicianConsensus,DX_" + n + "_Presum"] = np.where(
+            df[cls.col_base + n + "_Presum"] = np.where(
                 not_null & missing_confirm_presum,
                 0,
-                df["Diagnosis_ClinicianConsensus,DX_" + n + "_Presum"],
+                df[cls.col_base + n + "_Presum"],
             )
         return df
 
@@ -100,14 +96,14 @@ class DataCorrection:
         df: pd.DataFrame,
     ) -> int:
         for n in cls.dx_ns:
-            current_diagnosis = (
-                df["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"] != 1
-            ) & (df["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] != 2)
+            current_diagnosis = (df[cls.col_base + n + "_ByHx"] != 1) & (
+                df[cls.col_base + n + "_Time"] != 2
+            )
             # Past Doc should only be noted if ByHx is 1 or Time is 2
-            df["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"] = np.where(
+            df[cls.col_base + n + "_Past_Doc"] = np.where(
                 current_diagnosis,
                 np.nan,
-                df["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"],
+                df[cls.col_base + n + "_Past_Doc"],
             )
         return df
 
@@ -150,6 +146,13 @@ class DataCorrection:
             dtype={"Diagnosis_ClinicianConsensus,DX_10_Spec": str},
         )
 
+        if "Diagnosis_ClinicianConsensus,DX_01" in df.columns.to_list():
+            cls.col_base = "Diagnosis_ClinicianConsensus,DX_"
+        elif "DX_01" in df.columns.to_list():
+            cls.col_base = ""
+        else:
+            raise ValueError("Invalid column names.")
+
         df["Identifiers"] = df["Identifiers"].str.split(",").str[0]
 
         dx_ns = [f"{n:02d}" for n in range(1, 11)]
@@ -174,10 +177,10 @@ class DataCorrection:
         # remove incorrect past doc data
         df = cls._correct_past_doc(df)
         for n in dx_ns:
-            df = df.drop(columns=["Diagnosis_ClinicianConsensus,DX_" + n + "_New"])
+            df = df.drop(columns=[cls.col_base + n + "_New"])
             # Remove remission columns (Remission and Partial Remission)
-            df = df.drop(columns=["Diagnosis_ClinicianConsensus,DX_" + n + "_Rem"])
-            df = df.drop(columns=["Diagnosis_ClinicianConsensus,DX_" + n + "_PRem"])
+            df = df.drop(columns=[cls.col_base + n + "_Rem"])
+            df = df.drop(columns=[cls.col_base + n + "_PRem"])
 
         print("Data corrections completed.")
         save_path = hbn_data_path.replace(".csv", "_corrected.csv")

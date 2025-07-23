@@ -4,8 +4,14 @@ import pandas as pd
 
 def long_diagnoses(data: pd.DataFrame) -> pd.DataFrame:
     """Function for converting wide format diagnoses data to long format for data checks."""
-    dx_ns = ["Diagnosis_ClinicianConsensus,DX_0" + str(i) for i in range(1, 10)]
-    dx_ns.append("Diagnosis_ClinicianConsensus,DX_10")
+    if "Diagnosis_ClinicianConsensus,DX_01" in data.columns.to_list():
+        dx_ns = ["Diagnosis_ClinicianConsensus,DX_0" + str(i) for i in range(1, 10)]
+        dx_ns.append("Diagnosis_ClinicianConsensus,DX_10")
+    elif "DX_01" in data.columns.to_list():
+        dx_ns = ["DX_0" + str(i) for i in range(1, 10)]
+        dx_ns.append("DX_10")
+    else:
+        raise ValueError("No diagnosis columns found.")
 
     vars = [
         "_Confirmed",
