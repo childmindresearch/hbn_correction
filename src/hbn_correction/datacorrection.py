@@ -149,7 +149,7 @@ class DataCorrection:
         if "Diagnosis_ClinicianConsensus,DX_01" in df.columns.to_list():
             cls.col_base = "Diagnosis_ClinicianConsensus,DX_"
         elif "DX_01" in df.columns.to_list():
-            cls.col_base = ""
+            cls.col_base = "DX_"
         else:
             raise ValueError("Invalid column names.")
 
