@@ -124,3 +124,28 @@ def test_correct_past_doc():
             )
             == 0
         )
+
+def test_set_past_certainty():
+    """Test that past certainty values are set correctly."""
+    output = test_correction_class._set_past_certainty(data)
+    for n in [f"{n:02d}" for n in range(1, 11)]:
+        assert (
+            len(
+                output[
+                    (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] ==2)
+                    & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"] == 1)
+                    & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"] != 1)
+                ]
+            )
+            == 0
+        )
+        assert (
+            len(
+                output[
+                    (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] ==2)
+                    & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"] == 3)
+                    & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Confirmed"] != 1)
+                ]
+            )
+            == 0
+        )
