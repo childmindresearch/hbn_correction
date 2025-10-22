@@ -20,10 +20,16 @@ jobs:
     - uses: actions/setup-python@v5
       with:
         python-version-file: pyproject.toml
+    - name: Install uv
+      run: pip install uv
+    - name: Install dependencies
+      run: |
+        uv pip install .         # or use requirements.txt: uv pip install -r requirements.txt
+        uv pip install pdoc      # ensure pdoc is installed
     - name: Build docs
       run: |
-        APP_MODULE_NAME=$(ls src -U | head -1)  # Get the first module name in the src directory
-        poetry run pdoc src/"$APP_MODULE_NAME" -o docs_build -t docs/pdoc-theme --docformat google
+        APP_MODULE_NAME=$(ls src -U | head -1)
+        pdoc src/"$APP_MODULE_NAME" -o docs_build -t docs/pdoc-theme --docformat google
         touch docs_build/.nojekyll
     - uses: JamesIves/github-pages-deploy-action@v4
       with:
