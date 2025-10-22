@@ -11,12 +11,13 @@ data = generate_test_data(seed=11)
 test_correction_class = DataCorrection()
 test_correction_class.col_base = "Diagnosis_ClinicianConsensus,DX_"
 
+@pytest.mark.unit
 def test_input() -> None:
     """Test that invalid input raises an error."""
     with pytest.raises(FileNotFoundError):
         test_correction_class.run("data/wrong_data.csv")
 
-
+@pytest.mark.unit
 def test_correct_nulls():
     """Test that there are no certainty values for null diagnoses."""
     output = test_correction_class._correct_nulls(data)
@@ -54,7 +55,7 @@ def test_correct_nulls():
             == 0
         )
 
-
+@pytest.mark.unit
 def test_correct_byhx():
     """Test that the ByHx column is corrected."""
     output = test_correction_class._correct_byhx(data)
@@ -81,7 +82,7 @@ def test_correct_byhx():
             == 0
         )
 
-
+@pytest.mark.unit
 def test_correct_confirmed_presum():
     """Test that confirmed and presumptive values are corrected."""
     output = test_correction_class._correct_confirmed_presum(data)
@@ -105,7 +106,7 @@ def test_correct_confirmed_presum():
                 == 0
             )
 
-
+@pytest.mark.unit
 def test_correct_past_doc():
     """Test that past documentation values are corrected."""
     output = test_correction_class._correct_past_doc(data)
@@ -125,6 +126,7 @@ def test_correct_past_doc():
             == 0
         )
 
+@pytest.mark.unit
 def test_set_past_certainty():
     """Test that past certainty values are set correctly."""
     output = test_correction_class._set_past_certainty(data)

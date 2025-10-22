@@ -122,7 +122,6 @@ class DataCorrection:
             )
             reported_ksads = (df[cls.col_base + n + "_Past_Doc"] == 3)
             with_doc = (df[cls.col_base + n + "_Past_Doc"] == 1)
-            without_doc = (df[cls.col_base + n + "_Past_Doc"] == 2)
 
             df[cls.col_base + n + "_Confirmed"] = np.where(
                 past_diagnosis & missing_certainty & reported_ksads,
@@ -137,7 +136,7 @@ class DataCorrection:
             )
         return df
 
-    def run(cls, hbn_data_path: str) -> None:
+    def run(cls, hbn_data_path: str) -> pd.DataFrame:
         """Fixes errors and missing values in the diagnostic data and saves as csv.
 
         This function fixes known inconsistencies or errors in the HBN Clinician Consensus
