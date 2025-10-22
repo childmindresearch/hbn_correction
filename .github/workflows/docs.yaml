@@ -17,15 +17,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version-file: pyproject.toml
     - name: Install uv
       run: pip install uv
+      shell: bash
+    - uses: actions/setup-python@v5
+      with:
+       python-version-file: pyproject.toml
+       cache: pip
     - name: Install dependencies
       run: |
-        uv pip install .         # or use requirements.txt: uv pip install -r requirements.txt
-        uv pip install pdoc      # ensure pdoc is installed
+        uv sync
+      shell: bash
     - name: Build docs
       run: |
         APP_MODULE_NAME=$(ls src -U | head -1)
