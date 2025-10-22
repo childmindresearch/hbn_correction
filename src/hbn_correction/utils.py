@@ -120,7 +120,7 @@ def generate_test_data(seed: int) -> pd.DataFrame:
         ]:
             match col:
                 case "":
-                    d = rng.choice(rand_diagnoses, 100)
+                    d = rng.choice(np.array(rand_diagnoses), 100)
                 case _:
                     d = rng.choice([0, 1, np.nan], 100)
             data["Diagnosis_ClinicianConsensus,DX_" + n + col] = d

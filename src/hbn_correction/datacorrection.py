@@ -94,7 +94,7 @@ class DataCorrection:
     def _correct_past_doc(
         cls,
         df: pd.DataFrame,
-    ) -> int:
+    ) -> pd.DataFrame:
         for n in cls.dx_ns:
             current_diagnosis = (df[cls.col_base + n + "_ByHx"] != 1) & (
                 df[cls.col_base + n + "_Time"] != 2
@@ -106,8 +106,37 @@ class DataCorrection:
                 df[cls.col_base + n + "_Past_Doc"],
             )
         return df
+    
+    def _set_past_certainty(
+            cls,
+            df: pd.DataFrame,
+    ) -> pd.DataFrame:
+        for n in cls.dx_ns:
+            past_diagnosis = (df[cls.col_base + n + "_Time"] == 2)
+            missing_certainty = (
+                (df[cls.col_base + n + "_Confirmed"] != 1) & 
+                (df[cls.col_base + n + "_Presum"] != 1) &
+                (df[cls.col_base + n + "_RC"] != 1) &   
+                (df[cls.col_base + n + "_RuleOut"] != 1) &
+                (df[cls.col_base + n + "_ByHx"] != 1)
+            )
+            reported_ksads = (df[cls.col_base + n + "_Past_Doc"] == 3)
+            with_doc = (df[cls.col_base + n + "_Past_Doc"] == 1)
 
-    def run(cls, hbn_data_path: str) -> None:
+            df[cls.col_base + n + "_Confirmed"] = np.where(
+                past_diagnosis & missing_certainty & reported_ksads,
+                1,
+                df[cls.col_base + n + "_Confirmed"],
+            )
+
+            df[cls.col_base + n + "_ByHx"] = np.where(
+                past_diagnosis & missing_certainty & with_doc,
+                1,
+                df[cls.col_base + n + "_ByHx"],
+            )
+        return df
+
+    def run(cls, hbn_data_path: str) -> pd.DataFrame:
         """Fixes errors and missing values in the diagnostic data and saves as csv.
 
         This function fixes known inconsistencies or errors in the HBN Clinician Consensus
@@ -176,11 +205,15 @@ class DataCorrection:
         df = cls._correct_confirmed_presum(df)
         # remove incorrect past doc data
         df = cls._correct_past_doc(df)
+        # set missing past diagnosis certainty based on past_doc values
+        df = cls._set_past_certainty(df)
+        # remove unnecessary columns
         for n in dx_ns:
             df = df.drop(columns=[cls.col_base + n + "_New"])
             # Remove remission columns (Remission and Partial Remission)
             df = df.drop(columns=[cls.col_base + n + "_Rem"])
             df = df.drop(columns=[cls.col_base + n + "_PRem"])
+        
 
         print("Data corrections completed.")
         save_path = hbn_data_path.replace(".csv", "_corrected.csv")
