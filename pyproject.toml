@@ -19,3 +19,7 @@ dev = [
 
 [tool.uv.sources]
 hbn_correction = {workspace = true}
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
