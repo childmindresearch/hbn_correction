@@ -20,7 +20,7 @@ jobs:
         cache: pip
     - name: Install dependencies
       run: |
-        uv sync
+        uv sync --all-extras
       shell: bash
     - name: Run tests
       id: run-tests
