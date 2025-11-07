@@ -5,12 +5,6 @@ description = "Script to correct HBN clinician consesus diagnostic data"
 authors = [{name = "maya-roberts", email = "maya36247@gmail.com"}]
 readme = "README.md"
 requires-python = ">=3.11"
-[project]
-name = "hbn_correction"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.11"
 dependencies = [
   "pandas>=2.2.3",
 ]
