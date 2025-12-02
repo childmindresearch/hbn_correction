@@ -22,6 +22,9 @@ jobs:
       run: |
         uv sync --all-extras
       shell: bash
+    - name: Install dependencies
+      run: |
+        python3 -m pip install numpy pandas pytest pandas-stubs types-numpy
     - name: Run tests
       id: run-tests
       run: >
