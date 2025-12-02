@@ -11,11 +11,13 @@ data = generate_test_data(seed=11)
 test_correction_class = DataCorrection()
 test_correction_class.col_base = "Diagnosis_ClinicianConsensus,DX_"
 
+
 @pytest.mark.unit
 def test_input() -> None:
     """Test that invalid input raises an error."""
     with pytest.raises(FileNotFoundError):
         test_correction_class.run("data/wrong_data.csv")
+
 
 @pytest.mark.unit
 def test_correct_nulls():
@@ -55,6 +57,7 @@ def test_correct_nulls():
             == 0
         )
 
+
 @pytest.mark.unit
 def test_correct_byhx():
     """Test that the ByHx column is corrected."""
@@ -82,6 +85,7 @@ def test_correct_byhx():
             == 0
         )
 
+
 @pytest.mark.unit
 def test_correct_confirmed_presum():
     """Test that confirmed and presumptive values are corrected."""
@@ -106,6 +110,7 @@ def test_correct_confirmed_presum():
                 == 0
             )
 
+
 @pytest.mark.unit
 def test_correct_past_doc():
     """Test that past documentation values are corrected."""
@@ -126,6 +131,7 @@ def test_correct_past_doc():
             == 0
         )
 
+
 @pytest.mark.unit
 def test_set_past_certainty():
     """Test that past certainty values are set correctly."""
@@ -134,8 +140,11 @@ def test_set_past_certainty():
         assert (
             len(
                 output[
-                    (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] ==2)
-                    & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"] == 1)
+                    (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] == 2)
+                    & (
+                        output["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"]
+                        == 1
+                    )
                     & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_ByHx"] != 1)
                 ]
             )
@@ -144,9 +153,15 @@ def test_set_past_certainty():
         assert (
             len(
                 output[
-                    (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] ==2)
-                    & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"] == 3)
-                    & (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Confirmed"] != 1)
+                    (output["Diagnosis_ClinicianConsensus,DX_" + n + "_Time"] == 2)
+                    & (
+                        output["Diagnosis_ClinicianConsensus,DX_" + n + "_Past_Doc"]
+                        == 3
+                    )
+                    & (
+                        output["Diagnosis_ClinicianConsensus,DX_" + n + "_Confirmed"]
+                        != 1
+                    )
                 ]
             )
             == 0

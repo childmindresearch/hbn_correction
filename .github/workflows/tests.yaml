@@ -20,11 +20,9 @@ jobs:
         cache: pip
     - name: Install dependencies
       run: |
-        uv sync --all-extras
+        uv sync --group dev
+        uv pip install -e .
       shell: bash
-    - name: Install dependencies
-      run: |
-        python3 -m pip install numpy pandas pytest pandas-stubs types-numpy
     - name: Run tests
       id: run-tests
       run: >
@@ -51,14 +49,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Install mypy
-      run: pip install mypy
     - name: Install uv
-      run: pipx install uv
+      run: pip install uv
     - uses: actions/setup-python@v5
       with:
         python-version-file: pyproject.toml
         cache: pip
-    - run: |-
-        uv sync
-        uv run mypy .
+    - name: Install dependencies with dev group
+      run: |
+        uv sync --group dev
+        uv pip install -e .
+    - name: Run mypy
+      run: uv run mypy .

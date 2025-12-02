@@ -9,7 +9,7 @@ dependencies = [
   "pandas>=2.2.3",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
   "ipykernel>=6.29.5",
   "mypy>=1.15.0",
@@ -23,6 +23,14 @@ dev = [
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+
+[tool.mypy]
+mypy_path = "src"
+packages = ["hbn_correction"]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
 
 [build-system]
 requires = ["hatchling"]

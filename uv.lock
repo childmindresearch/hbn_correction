@@ -187,37 +187,33 @@ wheels = [
 [[package]]
 name = "hbn-correction"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
-    { name = "ipykernel" },
-    { name = "mypy" },
     { name = "pandas" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
 ]
 
 [package.dev-dependencies]
 dev = [
-    { name = "hbn-correction" },
+    { name = "ipykernel" },
+    { name = "mypy" },
     { name = "pandas-stubs" },
     { name = "pdoc" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
     { name = "ruff" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "ipykernel", specifier = ">=6.29.5" },
-    { name = "mypy", specifier = ">=1.15.0" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pytest", specifier = ">=8.3.5" },
-    { name = "pytest-cov", specifier = ">=6.1.1" },
-]
+requires-dist = [{ name = "pandas", specifier = ">=2.2.3" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "hbn-correction", virtual = "." },
+    { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "mypy", specifier = ">=1.15.0" },
     { name = "pandas-stubs", specifier = ">=2.3.2.250926" },
     { name = "pdoc", specifier = ">=15.0.4" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-cov", specifier = ">=6.1.1" },
     { name = "ruff", specifier = ">=0.14.1" },
 ]
 

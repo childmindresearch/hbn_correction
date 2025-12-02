@@ -106,22 +106,22 @@ class DataCorrection:
                 df[cls.col_base + n + "_Past_Doc"],
             )
         return df
-    
+
     def _set_past_certainty(
-            cls,
-            df: pd.DataFrame,
+        cls,
+        df: pd.DataFrame,
     ) -> pd.DataFrame:
         for n in cls.dx_ns:
-            past_diagnosis = (df[cls.col_base + n + "_Time"] == 2)
+            past_diagnosis = df[cls.col_base + n + "_Time"] == 2
             missing_certainty = (
-                (df[cls.col_base + n + "_Confirmed"] != 1) & 
-                (df[cls.col_base + n + "_Presum"] != 1) &
-                (df[cls.col_base + n + "_RC"] != 1) &   
-                (df[cls.col_base + n + "_RuleOut"] != 1) &
-                (df[cls.col_base + n + "_ByHx"] != 1)
+                (df[cls.col_base + n + "_Confirmed"] != 1)
+                & (df[cls.col_base + n + "_Presum"] != 1)
+                & (df[cls.col_base + n + "_RC"] != 1)
+                & (df[cls.col_base + n + "_RuleOut"] != 1)
+                & (df[cls.col_base + n + "_ByHx"] != 1)
             )
-            reported_ksads = (df[cls.col_base + n + "_Past_Doc"] == 3)
-            with_doc = (df[cls.col_base + n + "_Past_Doc"] == 1)
+            reported_ksads = df[cls.col_base + n + "_Past_Doc"] == 3
+            with_doc = df[cls.col_base + n + "_Past_Doc"] == 1
 
             df[cls.col_base + n + "_Confirmed"] = np.where(
                 past_diagnosis & missing_certainty & reported_ksads,
@@ -213,7 +213,6 @@ class DataCorrection:
             # Remove remission columns (Remission and Partial Remission)
             df = df.drop(columns=[cls.col_base + n + "_Rem"])
             df = df.drop(columns=[cls.col_base + n + "_PRem"])
-        
 
         print("Data corrections completed.")
         save_path = hbn_data_path.replace(".csv", "_corrected.csv")
