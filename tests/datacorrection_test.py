@@ -20,7 +20,7 @@ def test_input() -> None:
 
 
 @pytest.mark.unit
-def test_correct_nulls():
+def test_correct_nulls() -> None:
     """Test that there are no certainty values for null diagnoses."""
     output = test_correction_class._correct_nulls(data)
     for n, col in itertools.product(
@@ -59,7 +59,7 @@ def test_correct_nulls():
 
 
 @pytest.mark.unit
-def test_correct_byhx():
+def test_correct_byhx() -> None:
     """Test that the ByHx column is corrected."""
     output = test_correction_class._correct_byhx(data)
     for n in [f"{n:02d}" for n in range(1, 11)]:
@@ -87,7 +87,7 @@ def test_correct_byhx():
 
 
 @pytest.mark.unit
-def test_correct_confirmed_presum():
+def test_correct_confirmed_presum() -> None:
     """Test that confirmed and presumptive values are corrected."""
     output = test_correction_class._correct_confirmed_presum(data)
     for n in [f"{n:02d}" for n in range(1, 11)]:
@@ -112,7 +112,7 @@ def test_correct_confirmed_presum():
 
 
 @pytest.mark.unit
-def test_correct_past_doc():
+def test_correct_past_doc() -> None:
     """Test that past documentation values are corrected."""
     output = test_correction_class._correct_past_doc(data)
     for n in [f"{n:02d}" for n in range(1, 11)]:
@@ -133,7 +133,7 @@ def test_correct_past_doc():
 
 
 @pytest.mark.unit
-def test_set_past_certainty():
+def test_set_past_certainty() -> None:
     """Test that past certainty values are set correctly."""
     output = test_correction_class._set_past_certainty(data)
     for n in [f"{n:02d}" for n in range(1, 11)]:
