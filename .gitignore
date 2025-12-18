@@ -27,6 +27,11 @@ venv.bak/
 
 .vscode
 
+# Pytest
+.coverage
+coverage.xml
+pytest.xml
+
 # MyPy
 .mypy_cache/
 .dmypy.json

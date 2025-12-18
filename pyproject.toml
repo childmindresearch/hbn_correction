@@ -21,6 +21,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
+markers = ["unit: unit tests"]
 pythonpath = ["src"]
 testpaths = ["tests"]
 
