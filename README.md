@@ -2,7 +2,7 @@
 
 # HBN Correction
 
-## Installation 
+## Installation
 Install this package via:
 ```sh
 pip install git+https://github.com/childmindresearch/hbn_correction.git
