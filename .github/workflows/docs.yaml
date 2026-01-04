@@ -22,8 +22,8 @@ jobs:
       shell: bash
     - uses: actions/setup-python@v5
       with:
-       python-version-file: pyproject.toml
-       cache: pip
+        python-version-file: pyproject.toml
+        cache: pip
     - name: Install dependencies
       run: |
         uv sync
