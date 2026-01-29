@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
+from typing import Literal
 
-
-def long_diagnoses(data: pd.DataFrame) -> pd.DataFrame:
+def melt_data(data: pd.DataFrame) -> pd.DataFrame:
     """Function for converting wide format diagnoses data to long format for data checks."""
     if "Diagnosis_ClinicianConsensus,DX_01" in data.columns.to_list():
         dx_ns = ["Diagnosis_ClinicianConsensus,DX_0" + str(i) for i in range(1, 10)]
@@ -89,7 +89,55 @@ def long_diagnoses(data: pd.DataFrame) -> pd.DataFrame:
 
     return melted
 
-
+def combination_table(
+        data:pd.DataFrame,
+        grouping:Literal['diagnoses', 'specifiers', 'certainty', 'full'],
+        )-> pd.DataFrame:
+    # fill nulls with -1 for combination table and remove any duplicate rows
+    filled_data = data.fillna(-1).drop_duplicates(subset=['Identifiers'], keep=False)
+    # convert to long format
+    long_format_data = melt_data(filled_data)
+    # remove blanks and no diagnosis entries
+    combo_table = long_format_data.query(
+    'Diagnosis != -1' \
+    'and Diagnosis != "No Diagnosis Given"' \
+    'and Diagnosis != "No Diagnosis Given: Incomplete Eval"' \
+    )
+    match grouping:
+        case 'diagnoses':
+            combo_table = combo_table.groupby(
+                by=['Category', 'Subcategory', 'Diagnosis'],
+                as_index=False,
+                ).count()[
+                    ['Category', 'Subcategory', 'Diagnosis','Identifiers']
+                ].rename(columns={'Identifiers':'Count'})
+        case 'certainty':
+            combo_table = combo_table.groupby(
+                by=['Confirmed', 'Presum', 'RC', 'RuleOut', 'ByHx', 'Time'],
+                as_index=False,
+                ).count()[
+                    ['Confirmed', 'Presum', 'RC', 'RuleOut', 'ByHx', 'Time','Identifiers']
+                ].rename(columns={'Identifiers':'Count'})
+        case 'specifiers':
+            combo_table = combo_table.groupby(
+                by=['Diagnosis','Spec'],
+                as_index=False,
+                ).count()[
+                    ['Diagnosis','Spec','Identifiers']
+                ].rename(columns={'Identifiers':'Count'})
+        case 'full':
+            combo_table = combo_table.groupby(
+                by=['Category', 'Subcategory', 'Diagnosis','Spec','Confirmed', 'Presum', 'RC', 'RuleOut', 'ByHx', 'Time'],
+                as_index=False,
+                ).count()[
+                    ['Category', 'Subcategory', 'Diagnosis','Spec','Confirmed', 'Presum', 'RC', 'RuleOut', 'ByHx', 'Time','Identifiers']
+                ].rename(columns={'Identifiers':'Count'})
+        case _:
+            raise ValueError("Invalid grouping option.")
+    
+    combo_table = combo_table.replace(-1, "NULL")
+    return combo_table
+    
 def generate_test_data(seed: int) -> pd.DataFrame:
     """Generates test dataset for unit tests."""
     # diagnoses to randomly select from
