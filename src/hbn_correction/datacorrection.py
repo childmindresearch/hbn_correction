@@ -135,6 +135,16 @@ class DataCorrection:
                 df[cls.col_base + n + "_ByHx"],
             )
         return df
+    
+    def correct_code(cls, df: pd.DataFrame) -> pd.DataFrame:
+        for n in cls.dx_ns:
+            code_col = cls.col_base + n + "_Code"
+            df[code_col] = np.where(
+                df[code_col] == "F80.9",
+                "F80.2",
+                df[code_col],
+            )
+        return df
 
     def run(cls, hbn_data_path: str) -> pd.DataFrame:
         """Fixes errors and missing values in the diagnostic data and saves as csv.
@@ -207,6 +217,8 @@ class DataCorrection:
         df = cls._correct_past_doc(df)
         # set missing past diagnosis certainty based on past_doc values
         df = cls._set_past_certainty(df)
+        # correct code values
+        df = cls.correct_code(df)
         # remove unnecessary columns
         for n in dx_ns:
             df = df.drop(columns=[cls.col_base + n + "_New"])
